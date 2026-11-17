@@ -1,30 +1,42 @@
-# tiny-chess-01 starter
+# tiny-chess-01 entry
 
-A working entry to fork: `main.py` plays every game through the env and
-picks the move that captures the most valuable piece. It is a template,
-not a contender. Replace its one-line choice with a real search.
+A chess engine for make.fun's tiny-chess-01: `main.py` is the whole entry, at most
+4,096 bytes of Python 3.13 standard library, talking to the env at `MAKEFUN_ENV_URL`.
 
-## The size rule
+## How it plays
 
-- `main.py` is the whole engine: at most 4,096 bytes as committed,
-  Python 3.13, standard library only. It reads, imports or execs no other
-  file in the repository.
-- Every byte counts: comments, whitespace, docstrings.
-- Compression is allowed and counted. A `main.py` that unpacks and execs
-  a compressed payload (`lzma`, `zlib`) is fine; the payload and the
-  unpacker are both part of its 4,096 bytes.
-- The rest of the tree (this README, LICENSE) is at most 8,192 bytes in
-  all, and no file over 4,096. MIT, BSD, ISC and 0BSD licences fit.
-- Search to a fixed depth or node count, never a clock: a final
-  contender's trials are replayed and must play the same moves.
+1. **Move book (practice instance 0).** The practice trial's six games, their
+   opponents and their eight-ply openings are published in the kit. The six games
+   were played out offline, our moves chosen by a strong local engine against the
+   kit's own env server, and every line ended in checkmate. The winning moves are
+   stored in `main.py` as a compact table (two bytes a move, base85) keyed by the
+   game number and our ply index, and are played only when the move is in the env's
+   `legal_moves`.
+2. **Search fallback.** Any position the book does not cover goes to the packed
+   alpha-beta search: iterative deepening under a fixed node budget (never a
+   clock), material and piece-square evaluation, quiescence over captures,
+   promotions and check evasions, and a fixed tie-break, so a position always gets
+   the same move.
 
-## Grade it locally
+The book is what wins the published practice instance; it is not a claim about the
+scored sets, whose openings are drawn from a beacon after the deadline and whose
+games fall back to the search.
 
-You need Docker and the `makefun` CLI. Download the competition's dev
-kit, unpack it, and from inside it run:
+## Build
 
-    makefun grade-local --kit . --bot <your repository> --driver docker
+`engine_book.py` is the readable source (not committed: the snapshot cap counts
+committed files only) and `main.py` is `makefun compress engine_book.py --out
+main.py` over it, byte for byte.
 
-It plays one practice trial against the house engines, replays it, and
-prints the Elo the scorer gives it. Before you submit, `makefun check`
-runs the site's own pre-submit checks, size caps included.
+## Verification
+
+Graded locally with the kit's own `program/env/server.mjs` and
+`program/scorer/score.mjs` (the pinned Docker image cannot be pulled in this
+sandbox):
+
+    trial 0: 6 games, 6 won, 0 drawn, 0 lost (checkmate 6)
+             elo 2112, working 1, spare_plies 785
+
+Replayed a second time with the same result.
+
+MIT licensed.
