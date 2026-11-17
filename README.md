@@ -42,10 +42,11 @@ Graded locally with the kit's own `program/env/server.mjs` and
 sandbox):
 
     trial 0: 6 games, 6 won, 0 drawn, 0 lost (checkmate 6)
-             elo 2112, working 1, spare_plies 785
+             elo 2112, working 1, spare_plies 1011
 
-`main.py` from that same build is 3,349 bytes. The run was graded again after the
-`engine_book.py` cleanup (book-format comment, no per-game stderr chatter) and
-scored identically.
+`main.py` from that same build is 3,064 bytes. The latest run used
+`/usr/bin/python3 -u grade_local.py --trial 0 --bot /home/agent/projects/tiny-chess --keep`
+from the local lab, with the kit's original env and scorer. All six games ended
+in checkmate, using 189 plies in total.
 
 MIT licensed.
