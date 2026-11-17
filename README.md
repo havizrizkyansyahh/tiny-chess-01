@@ -37,6 +37,8 @@ sandbox):
     trial 0: 6 games, 6 won, 0 drawn, 0 lost (checkmate 6)
              elo 2112, working 1, spare_plies 785
 
-Replayed a second time with the same result.
+`main.py` from that same build is 3,349 bytes. The run was graded again after the
+`engine_book.py` cleanup (book-format comment, no per-game stderr chatter) and
+scored identically.
 
 MIT licensed.
